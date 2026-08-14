@@ -1,16 +1,31 @@
 @extends('admin.layout')
 
+@php
+    $isViewingOther = $viewingOther ?? false;
+    $viewedName = $isViewingOther ? ($employee->full_name ?? $employee->first_name) : null;
+@endphp
+
 @section('title', 'Performance')
-@section('page-title', 'My Performance')
+@section('page-title', $isViewingOther ? $viewedName . '’s Performance' : 'My Performance')
 @php
     $pageDesc = ($divisionName ?? '') === 'Finance & Accounts'
         ? 'Track invoice collections, revenue collected, and outstanding receivables. 💰'
-        : 'Track your placements, revenue, and client growth — keep pushing! 💪';
+        : ($isViewingOther
+            ? 'Placements, revenue, client growth, and KPI progress for ' . $viewedName . '. 💪'
+            : 'Track your placements, revenue, and client growth — keep pushing! 💪');
 @endphp
 @section('page-description', $pageDesc)
 
 @section('content')
 <div style="max-width:1100px;">
+
+    @if($isViewingOther)
+        <a href="{{ route('admin.linkers-hub.employee-profile', $employee->id) }}"
+           style="display:inline-flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:600;color:#1f5f46;text-decoration:none;margin-bottom:16px;">
+            <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Back to {{ $viewedName }}'s profile
+        </a>
+    @endif
 
     @if(!($dashboardAvailable ?? true))
         <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:48px 24px; text-align:center;">
@@ -18,6 +33,8 @@
             <p style="font-size:0.85rem; color:#6b7280; margin:0; max-width:420px; margin-left:auto; margin-right:auto;">
                 @if($divisionName)
                     There isn't a Performance dashboard built for the <strong>{{ $divisionName }}</strong> division yet.
+                @elseif($isViewingOther)
+                    {{ $viewedName }} isn't linked to a division yet, so there's no Performance dashboard to show.
                 @else
                     Your account isn't linked to a division yet, so there's no Performance dashboard to show.
                 @endif
