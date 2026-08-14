@@ -1,0 +1,4 @@
+.claude/settings.local.json
+*.bak
+*.backup*
+*.broken_backup
