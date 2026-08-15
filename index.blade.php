@@ -127,6 +127,12 @@
         });
     </script>
 
+    {{-- Company-wide YTD Dashboard — super_admin only, independent of which
+         division's dashboard is shown below. See ytd-dashboard-cards.blade.php. --}}
+    @if($isSuperAdmin ?? false)
+        @include('admin.kpi.ytd-dashboard-cards', ['cards' => $ytdDashboardCards ?? []])
+    @endif
+
     {{-- ====================================================================
          HUMAN RESOURCES & RECRUITMENT DASHBOARD
          ==================================================================== --}}
