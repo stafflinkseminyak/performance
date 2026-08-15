@@ -27,6 +27,20 @@
         </a>
     @endif
 
+    {{-- Company-wide YTD Dashboard — super_admin only. Rendered here, BEFORE the
+         dashboardAvailable branch below, so it always shows for a super_admin
+         regardless of whether the viewed account has a division-specific
+         dashboard at all (a director with no division still sees this). --}}
+    @if($isSuperAdmin ?? false)
+        @include('admin.kpi.ytd-dashboard-cards', ['cards' => $ytdDashboardCards ?? []])
+        @if(!empty($ytdDashboardCards) && ($dashboardAvailable ?? true))
+            <div style="display:flex; align-items:center; gap:10px; margin:20px 0 22px;">
+                <span style="font-size:0.72rem; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.05em; white-space:nowrap;">{{ $divisionName ?? 'Personal' }} dashboard</span>
+                <div style="flex:1; height:1px; background:#e5e7eb;"></div>
+            </div>
+        @endif
+    @endif
+
     @if(!($dashboardAvailable ?? true))
         <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:48px 24px; text-align:center;">
             <p style="font-size:1rem; font-weight:700; color:#1b4332; margin:0 0 8px;">🚧 Performance dashboard not available yet</p>
@@ -126,12 +140,6 @@
             }
         });
     </script>
-
-    {{-- Company-wide YTD Dashboard — super_admin only, independent of which
-         division's dashboard is shown below. See ytd-dashboard-cards.blade.php. --}}
-    @if($isSuperAdmin ?? false)
-        @include('admin.kpi.ytd-dashboard-cards', ['cards' => $ytdDashboardCards ?? []])
-    @endif
 
     {{-- ====================================================================
          HUMAN RESOURCES & RECRUITMENT DASHBOARD
