@@ -41,20 +41,7 @@
         @endif
     @endif
 
-    @if(!($dashboardAvailable ?? true))
-        <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:48px 24px; text-align:center;">
-            <p style="font-size:1rem; font-weight:700; color:#1b4332; margin:0 0 8px;">🚧 Performance dashboard not available yet</p>
-            <p style="font-size:0.85rem; color:#6b7280; margin:0; max-width:420px; margin-left:auto; margin-right:auto;">
-                @if($divisionName)
-                    There isn't a Performance dashboard built for the <strong>{{ $divisionName }}</strong> division yet.
-                @elseif($isViewingOther)
-                    {{ $viewedName }} isn't linked to a division yet, so there's no Performance dashboard to show.
-                @else
-                    Your account isn't linked to a division yet, so there's no Performance dashboard to show.
-                @endif
-            </p>
-        </div>
-    @else
+    @if($dashboardAvailable ?? true)
 
     <!-- ============ HEADER: division (left) + month picker + export (right) ============ -->
     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:12px;">
@@ -730,6 +717,24 @@
 
     @endif {{-- end division block --}}
 
+    {{-- A super_admin with no division (e.g. a director account) isn't missing
+         anything — they were never meant to have a personal division dashboard,
+         so skip this message for them entirely; the YTD Dashboard above is the
+         whole point of their Performance page. Show it only for a regular
+         account whose division genuinely isn't wired up yet. --}}
+    @elseif(!($isSuperAdmin ?? false))
+        <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:48px 24px; text-align:center;">
+            <p style="font-size:1rem; font-weight:700; color:#1b4332; margin:0 0 8px;">🚧 Performance dashboard not available yet</p>
+            <p style="font-size:0.85rem; color:#6b7280; margin:0; max-width:420px; margin-left:auto; margin-right:auto;">
+                @if($divisionName)
+                    There isn't a Performance dashboard built for the <strong>{{ $divisionName }}</strong> division yet.
+                @elseif($isViewingOther)
+                    {{ $viewedName }} isn't linked to a division yet, so there's no Performance dashboard to show.
+                @else
+                    Your account isn't linked to a division yet, so there's no Performance dashboard to show.
+                @endif
+            </p>
+        </div>
     @endif {{-- end dashboardAvailable --}}
 
 </div>
